@@ -1,0 +1,1390 @@
+ScreenDashboard As screen:
+    BackgroundImage: =bg5
+    Fill: =RGBA(56, 56, 66, 0.9)
+    ImagePosition: =ImagePosition.Fill
+    OnVisible: |-
+        =UpdateContext({ratingSuccessMsgVisible: false});
+        Set(_selectedTutorial, {Row: 6, Title: "Dashboard", Image: Icon.CameraAperture});
+        //Set(_selectedIcon, "Dashboard")
+
+    ComponentTopBarHome_6 As ComponentTopBar:
+        ZIndex: =2
+
+    ButtonProdLogout_14 As button:
+        Color: =RGBA(255, 255, 255, 0.8)
+        Fill: =RGBA(46, 46, 56, 1)
+        FontWeight: =FontWeight.Normal
+        Height: =44
+        HoverBorderColor: =RGBA(46, 46, 56, 1)
+        HoverColor: =RGBA(255, 230, 0, 1)
+        HoverFill: =RGBA(46, 46, 56, 1)
+        OnSelect: =Exit(true);
+        PressedBorderColor: =RGBA(46, 46, 56, 1)
+        PressedColor: =RGBA(255, 255, 255, 1)
+        PressedFill: =RGBA(46, 46, 56, 1)
+        RadiusBottomLeft: =0
+        RadiusBottomRight: =0
+        RadiusTopLeft: =0
+        RadiusTopRight: =0
+        Size: =12
+        Text: ="Logout"
+        Visible: |-
+            =//_showLogoutButton
+            
+            ComponentTopBarHome_6.BtnLogoutVisible
+        Width: =82
+        X: =1264
+        Y: =53
+        ZIndex: =3
+
+    Gallery5 As gallery.galleryVertical:
+        Height: =640
+        Items: =Filter('Idea Detail', Status.Value = "Closed" || Status.Value = "Approved" || Status.Value = "Rejected" , StartsWith(Title, TextInput1_2.Text))
+        Layout: =Layout.Vertical
+        OnSelect: =
+        ShowScrollbar: =false
+        TemplateSize: =105
+        Width: =472
+        X: =If(!IsExpand, 206, 100)
+        Y: =109
+        ZIndex: =4
+
+        Label5_3 As label:
+            BorderColor: =RGBA(46, 46, 56, 1)
+            BorderThickness: =2
+            Color: =RGBA(255, 255, 255, 1)
+            Fill: =If(ThisItem.IsSelected,RGBA(250, 230, 0, .9),RGBA(46, 46, 56, 0.8))
+            Height: =105
+            OnSelect: |-
+                =Select(Parent);UpdateContext({ratingSuccessMsgVisible: false});
+            PaddingLeft: =100
+            Text: =""
+            Width: =466
+            ZIndex: =1
+
+        Label22 As label:
+            Color: =If(ThisItem.IsSelected, RGBA(0, 0, 0, 1), RGBA(255, 255, 255, 1))
+            FontWeight: =FontWeight.Semibold
+            Height: =44
+            OnSelect: =Select(Parent)
+            PaddingLeft: =10
+            Text: =ThisItem.Title
+            Width: =380
+            X: =10
+            ZIndex: =2
+
+        Label25 As label:
+            Color: =RGBA(255, 255, 255, 1)
+            Fill: =RGBA(255, 255, 255, 1)
+            Height: =105
+            OnSelect: =Select(Parent)
+            Text: =
+            Width: =5
+            ZIndex: =3
+
+        Label22_2 As label:
+            Color: =If(ThisItem.IsSelected, RGBA(0, 0, 0, 1), RGBA(255, 255, 255, 1))
+            FontWeight: =FontWeight.Semibold
+            Height: =32
+            OnSelect: =Select(Parent)
+            Text: =Sum(Filter('Idea Ratings', 'Idea ID' = ThisItem.ID), 'Total Ratings')
+            Width: =48
+            X: =414
+            ZIndex: =4
+
+        Rating2 As rating:
+            Default: =3
+            DisabledFill: =Self.Fill
+            DisplayMode: =DisplayMode.Edit
+            FocusedBorderColor: =Self.BorderColor
+            Height: =32
+            HoverFill: =Self.Fill
+            Max: =1
+            OnSelect: =Select(Parent)
+            PressedFill: =Self.Fill
+            RatingFill: =If(ThisItem.IsSelected, RGBA(0, 0, 0, 1), RGBA(255, 255, 255, 1))
+            Visible: =!IsBlank(Sum(Filter('Idea Ratings', 'Idea ID' = ThisItem.ID), 'Total Ratings'))
+            Width: =19
+            X: =401
+            Y: =0
+            ZIndex: =5
+
+        Icon16 As icon.LikeDislike:
+            Color: =If(ThisItem.IsSelected, RGBA(0, 0, 0, 1), RGBA(255, 255, 255, 1))
+            Height: =31
+            Icon: =Icon.LikeDislike
+            OnSelect: |-
+                =UpdateContext({showAllRatings: !showAllRatings})
+            Visible: =false
+            Width: =49
+            X: =401
+            Y: =68
+            ZIndex: =6
+
+        Icon10 As icon.Add:
+            Color: =RGBA(46, 46, 56, 1)
+            Height: =40
+            Icon: =Icon.OpenInNewWindow
+            OnSelect: |-
+                =Navigate('Details Screen', None, {_IdeaID: ThisItem.ID})
+            PaddingBottom: =10
+            PaddingTop: =10
+            Tooltip: ="go to details"
+            X: =393
+            Y: =44
+            ZIndex: =7
+
+        Icon13_2 As icon.People:
+            Color: =RGBA(46, 46, 56, 1)
+            Height: =40
+            Icon: =Icon.People
+            OnSelect: |-
+                =Navigate('Teams Screen', None, {_IdeaID: ThisItem.ID})
+            PaddingBottom: =5
+            PaddingTop: =6
+            Tooltip: ="view teams"
+            Visible: =!(ThisItem.Status.Value = "Unhosted")
+            X: =326
+            Y: =44
+            ZIndex: =8
+
+        Icon8_1 As icon.Check:
+            Color: =RGBA(255, 255, 255, 1)
+            DisplayMode: =DisplayMode.View
+            Height: =49
+            Icon: |-
+                =If(
+                    ThisItem.Status.Value = "Approved",
+                    Icon.Check,
+                    ThisItem.Status.Value = "Rejected",
+                    Icon.Cancel
+                )
+            OnSelect: =Select(Parent)
+            PaddingBottom: =15
+            PaddingTop: =15
+            Tooltip: |-
+                =If(
+                    ThisItem.Status.Value = "Approved",
+                    "Approved",
+                    ThisItem.Status.Value = "Rejected",
+                    "Rejected"
+                )
+            Width: =45
+            X: =10
+            Y: =56
+            ZIndex: =9
+
+        Icon10_1 As icon.Add:
+            Color: =RGBA(46, 46, 56, 1)
+            Height: =40
+            Icon: =Icon.More
+            OnSelect: |-
+                =UpdateContext({showRatings:!showRatings})
+            PaddingBottom: =10
+            PaddingTop: =10
+            Tooltip: ="go to details"
+            X: =256
+            Y: =44
+            ZIndex: =10
+
+    Label23 As label:
+        Color: =RGBA(255, 255, 255, 1)
+        Height: =38
+        Size: =20
+        Text: ="Projects"
+        Width: =170
+        X: =If(!IsExpand, 206, 100)
+        Y: =60
+        ZIndex: =5
+
+    Label23_1 As label:
+        Color: =RGBA(255, 255, 255, 1)
+        Size: =20
+        Text: ="My Ratings"
+        Width: =627
+        X: =If(!IsExpand, 710, 590)
+        Y: =57
+        ZIndex: =6
+
+    Form4 As form:
+        AcceptsFocus: =false
+        BorderColor: =RGBA(250, 230, 0, 1)
+        BorderThickness: =1
+        DataSource: ='Idea Ratings'
+        DefaultMode: =If(IsBlank(First(Filter('Idea Ratings', 'Idea ID' = Gallery5.Selected.ID, 'Created By'.Email= User().Email))), New, Edit)
+        Fill: =RGBA(46, 46, 56, 0.8)
+        Height: =635
+        Item: =If(IsBlank(First(Filter('Idea Ratings', 'Idea ID' = Gallery5.Selected.ID,'Created By'.Email = User().Email)).ID), Defaults('Idea Ratings'), First(Filter('Idea Ratings', 'Idea ID' = Gallery5.Selected.ID,'Created By'.Email = User().Email)))
+        NumberOfColumns: =1
+        OnSuccess: |-
+            =UpdateContext({ratingSuccessMsgVisible: true});
+        Width: =If(!IsExpand, 645, 755)
+        X: =If(!IsExpand, 710, 590)
+        Y: =114
+        ZIndex: =7
+
+        DataCard3 As typedDataCard.blankCard:
+            BorderStyle: =BorderStyle.Solid
+            DisplayMode: =DisplayMode.Edit
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =46
+            Width: =642
+            X: =0
+            Y: =0
+            ZIndex: =1
+
+            Label22_1 As label:
+                Color: =RGBA(255, 230, 0, 1)
+                FontWeight: =FontWeight.Semibold
+                Height: =46
+                OnSelect: =
+                Overflow: =Overflow.Scroll
+                PaddingLeft: =10
+                PaddingRight: =10
+                Text: =Gallery5.Selected.Title
+                Width: =695
+                ZIndex: =1
+
+        DataCard2 As typedDataCard.blankCard:
+            BorderStyle: =BorderStyle.Solid
+            DisplayMode: =DisplayMode.Edit
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =51
+            Width: =642
+            X: =0
+            Y: =8
+            ZIndex: =1
+
+            ButtonNewIdea_6 As button:
+                BorderColor: =RGBA(26, 26, 36, 1)
+                BorderThickness: =1
+                Color: =RGBA(250, 230, 0, 1)
+                DisabledColor: =RGBA(255, 255, 255, 1)
+                DisabledFill: =RGBA(67, 67, 76, 1)
+                Fill: =RGBA(56, 56, 66, 1)
+                FontWeight: =FontWeight.Normal
+                Height: =44
+                HoverBorderColor: =RGBA(46, 46, 56, 1)
+                HoverColor: =RGBA(255, 230, 0, 1)
+                HoverFill: =RGBA(56, 56, 66, 1)
+                OnSelect: =SubmitForm(Form4);
+                PressedBorderColor: =RGBA(46, 46, 56, 1)
+                PressedColor: =RGBA(255, 255, 255, 1)
+                PressedFill: =RGBA(56, 56, 66, 1)
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Size: =12
+                Text: ="  Submit"
+                Width: =180
+                X: =403
+                ZIndex: =2
+
+        DataCard4 As typedDataCard.blankCard:
+            BorderStyle: =BorderStyle.Solid
+            DisplayMode: =DisplayMode.Edit
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =48
+            Visible: =ratingSuccessMsgVisible
+            Width: =642
+            X: =0
+            Y: =10
+            ZIndex: =1
+
+            Label24 As label:
+                Align: =Align.Center
+                Color: =RGBA(255, 230, 0, 1)
+                Height: =45
+                Text: ="Ratings submitted successfully"
+                Visible: =ratingSuccessMsgVisible
+                Width: =695
+                ZIndex: =1
+
+        Title_DataCard5 As typedDataCard.textualEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="Title"
+            Default: =ThisItem.Title
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@'Idea Ratings'],DataSourceInfo.DisplayName,"Title")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =0
+            MaxLength: =DataSourceInfo([@'Idea Ratings'], DataSourceInfo.MaxLength, "Title")
+            Required: =true
+            Update: =DataCardValue42.Text
+            Visible: =false
+            Width: =645
+            X: =0
+            Y: =1
+            ZIndex: =13
+
+            DataCardKey42 As label:
+                Color: =RGBA(255, 255, 255, 1)
+                Height: =36
+                Text: =Parent.DisplayName
+                Width: =Parent.Width - 60
+                Wrap: =false
+                X: =30
+                Y: =10
+                ZIndex: =1
+
+            DataCardValue42 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Gallery5.Selected.Title
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardKey42.Y + DataCardKey42.Height + 5
+                ZIndex: =2
+
+            ErrorMessage37 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue42.Y + DataCardValue42.Height
+                ZIndex: =3
+
+            StarVisible37 As label:
+                Align: =Align.Center
+                Height: =DataCardKey42.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey42.Y
+                ZIndex: =4
+
+        "'Code Quality_DataCard1' As typedDataCard.numberEditCard":
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="CodeQuality"
+            Default: =ThisItem.'Code Quality'
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@'Idea Ratings'],DataSourceInfo.DisplayName,"CodeQuality")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =false
+            Update: =Value(DataCardValue43.Text)
+            Width: =642
+            X: =0
+            Y: =2
+            ZIndex: =13
+
+            DataCardKey43 As label:
+                AutoHeight: =true
+                Color: =RGBA(255, 255, 255, 1)
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =266
+                Wrap: =false
+                X: =30
+                Y: =10
+                ZIndex: =1
+
+            DataCardValue43 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Rating1.Value
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                Format: =TextFormat.Number
+                Height: =30
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Visible: =false
+                Width: =71
+                X: =202
+                Y: =8
+                ZIndex: =2
+
+            ErrorMessage38 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue43.Y + DataCardValue43.Height
+                ZIndex: =3
+
+            StarVisible38 As label:
+                Align: =Align.Center
+                Height: =DataCardKey43.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey43.Y
+                ZIndex: =4
+
+            Rating1 As rating:
+                Default: =If(IsBlank(First(Filter('Idea Ratings', 'Idea ID' = Gallery5.Selected.ID, 'Created By'.Email = User().Email))), 0, ThisItem.'Code Quality' )
+                DisabledFill: =Self.Fill
+                DisplayMode: =DisplayMode.Edit
+                FocusedBorderColor: =Self.BorderColor
+                Height: =34
+                HoverFill: =Self.Fill
+                PressedFill: =Self.Fill
+                RatingFill: =RGBA(250, 230, 0, 1)
+                Width: =169
+                X: =400
+                Y: =10
+                ZIndex: =5
+
+        "'Timeline Delivery_DataCard1' As typedDataCard.numberEditCard":
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="TimelineDelivery"
+            Default: =ThisItem.'Timeline Delivery'
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@'Idea Ratings'],DataSourceInfo.DisplayName,"TimelineDelivery")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =false
+            Update: =Value(DataCardValue44.Text)
+            Width: =642
+            X: =0
+            Y: =3
+            ZIndex: =13
+
+            DataCardKey44 As label:
+                AutoHeight: =true
+                Color: =RGBA(255, 255, 255, 1)
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =298
+                Wrap: =false
+                X: =30
+                Y: =10
+                ZIndex: =1
+
+            DataCardValue44 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Rating1_1.Value
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                Format: =TextFormat.Number
+                Height: =30
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Visible: =false
+                Width: =55
+                X: =208
+                Y: =8
+                ZIndex: =2
+
+            ErrorMessage39 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue44.Y + DataCardValue44.Height
+                ZIndex: =3
+
+            StarVisible39 As label:
+                Align: =Align.Center
+                Height: =DataCardKey44.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey44.Y
+                ZIndex: =4
+
+            Rating1_1 As rating:
+                Default: =If(IsBlank(First(Filter('Idea Ratings', 'Idea ID' = Gallery5.Selected.ID, 'Created By'.Email = User().Email))), 0, ThisItem.'Timeline Delivery')
+                DisabledFill: =Self.Fill
+                DisplayMode: =DisplayMode.Edit
+                FocusedBorderColor: =Self.BorderColor
+                Height: =34
+                HoverFill: =Self.Fill
+                PressedFill: =Self.Fill
+                RatingFill: =RGBA(250, 230, 0, 1)
+                Width: =169
+                X: =400
+                Y: =10
+                ZIndex: =5
+
+        "'Purpose Achieved_DataCard1' As typedDataCard.numberEditCard":
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="PurposeAchieved"
+            Default: =ThisItem.'Purpose Achieved'
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@'Idea Ratings'],DataSourceInfo.DisplayName,"PurposeAchieved")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =false
+            Update: =Value(DataCardValue45.Text)
+            Width: =642
+            X: =0
+            Y: =4
+            ZIndex: =13
+
+            DataCardKey45 As label:
+                AutoHeight: =true
+                Color: =RGBA(255, 255, 255, 1)
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =303
+                Wrap: =false
+                X: =30
+                Y: =10
+                ZIndex: =1
+
+            DataCardValue45 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Rating1_2.Value
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                Format: =TextFormat.Number
+                Height: =30
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Visible: =false
+                Width: =65
+                X: =203
+                Y: =8
+                ZIndex: =2
+
+            ErrorMessage40 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue45.Y + DataCardValue45.Height
+                ZIndex: =3
+
+            StarVisible40 As label:
+                Align: =Align.Center
+                Height: =DataCardKey45.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey45.Y
+                ZIndex: =4
+
+            Rating1_2 As rating:
+                Default: =If(IsBlank(First(Filter('Idea Ratings', 'Idea ID' = Gallery5.Selected.ID, 'Created By'.Email = User().Email))), 0, ThisItem.'Purpose Achieved')
+                DisabledFill: =Self.Fill
+                DisplayMode: =DisplayMode.Edit
+                FocusedBorderColor: =Self.BorderColor
+                Height: =34
+                HoverFill: =Self.Fill
+                PressedFill: =Self.Fill
+                RatingFill: =RGBA(250, 230, 0, 1)
+                Width: =169
+                X: =400
+                Y: =7
+                ZIndex: =5
+
+        "'Documentation Quality_DataCard1' As typedDataCard.numberEditCard":
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="DocumentationQuality"
+            Default: =ThisItem.'Documentation Quality'
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@'Idea Ratings'],DataSourceInfo.DisplayName,"DocumentationQuality")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =false
+            Update: =Value(DataCardValue46.Text)
+            Width: =642
+            X: =0
+            Y: =5
+            ZIndex: =13
+
+            DataCardKey46 As label:
+                AutoHeight: =true
+                Color: =RGBA(255, 255, 255, 1)
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =342
+                Wrap: =false
+                X: =30
+                Y: =10
+                ZIndex: =1
+
+            DataCardValue46 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Rating1_3.Value
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                Format: =TextFormat.Number
+                Height: =30
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Visible: =false
+                Width: =94
+                X: =250
+                Y: =8
+                ZIndex: =2
+
+            ErrorMessage41 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue46.Y + DataCardValue46.Height
+                ZIndex: =3
+
+            StarVisible41 As label:
+                Align: =Align.Center
+                Height: =DataCardKey46.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey46.Y
+                ZIndex: =4
+
+            Rating1_3 As rating:
+                Default: =If(IsBlank(First(Filter('Idea Ratings', 'Idea ID' = Gallery5.Selected.ID, 'Created By'.Email = User().Email))), 0, ThisItem.'Documentation Quality')
+                DisabledFill: =Self.Fill
+                DisplayMode: =DisplayMode.Edit
+                FocusedBorderColor: =Self.BorderColor
+                Height: =34
+                HoverFill: =Self.Fill
+                PressedFill: =Self.Fill
+                RatingFill: =RGBA(250, 230, 0, 1)
+                Width: =169
+                X: =400
+                Y: =0
+                ZIndex: =5
+
+        "'User Experience_DataCard1' As typedDataCard.numberEditCard":
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="UserExperience"
+            Default: =ThisItem.'User Experience'
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@'Idea Ratings'],DataSourceInfo.DisplayName,"UserExperience")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =false
+            Update: =Value(DataCardValue47.Text)
+            Width: =642
+            X: =0
+            Y: =6
+            ZIndex: =13
+
+            DataCardKey47 As label:
+                AutoHeight: =true
+                Color: =RGBA(255, 255, 255, 1)
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =326
+                Wrap: =false
+                X: =30
+                Y: =10
+                ZIndex: =1
+
+            DataCardValue47 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Rating1_4.Value
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                Format: =TextFormat.Number
+                Height: =30
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Visible: =false
+                Width: =72
+                X: =197
+                Y: =8
+                ZIndex: =2
+
+            ErrorMessage42 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue47.Y + DataCardValue47.Height
+                ZIndex: =3
+
+            StarVisible42 As label:
+                Align: =Align.Center
+                Height: =DataCardKey47.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey47.Y
+                ZIndex: =4
+
+            Rating1_4 As rating:
+                Default: =If(IsBlank(First(Filter('Idea Ratings', 'Idea ID' = Gallery5.Selected.ID, 'Created By'.Email = User().Email))), 0, ThisItem.'User Experience')
+                DisabledFill: =Self.Fill
+                DisplayMode: =DisplayMode.Edit
+                FocusedBorderColor: =Self.BorderColor
+                Height: =34
+                HoverFill: =Self.Fill
+                PressedFill: =Self.Fill
+                RatingFill: =RGBA(250, 230, 0, 1)
+                Width: =169
+                X: =400
+                Y: =10
+                ZIndex: =5
+
+        Comments_DataCard1 As typedDataCard.textualEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="Comments"
+            Default: =ThisItem.Comments
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@'Idea Ratings'],DataSourceInfo.DisplayName,"Comments")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@'Idea Ratings'], DataSourceInfo.MaxLength, "Comments")
+            Required: =false
+            Update: =DataCardValue48.Text
+            Width: =642
+            X: =0
+            Y: =7
+            ZIndex: =13
+
+            DataCardKey48 As label:
+                AutoHeight: =true
+                Color: =RGBA(255, 255, 255, 1)
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =Parent.Width - 60
+                Wrap: =false
+                X: =30
+                Y: =10
+                ZIndex: =1
+
+            DataCardValue48 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                BorderStyle: =BorderStyle.None
+                Color: =RGBA(255, 255, 255, 1)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                Fill: =RGBA(66, 66, 76, 1)
+                Height: =120
+                HoverBorderColor: =RGBA(66, 66, 76, 1)
+                HoverColor: =RGBA(255, 255, 255, 1)
+                HoverFill: =RGBA(66, 66, 76, 1)
+                MaxLength: =Parent.MaxLength
+                Mode: =TextMode.MultiLine
+                PaddingLeft: =5
+                PressedColor: =RGBA(255, 255, 255, 1)
+                PressedFill: =RGBA(66, 66, 76, 1)
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =550
+                X: =30
+                Y: =DataCardKey48.Y + DataCardKey48.Height + 5
+                ZIndex: =2
+
+            ErrorMessage43 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue48.Y + DataCardValue48.Height
+                ZIndex: =3
+
+            StarVisible43 As label:
+                Align: =Align.Center
+                Height: =DataCardKey48.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey48.Y
+                ZIndex: =4
+
+        "'Idea ID_DataCard2' As typedDataCard.numberEditCard":
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="IdeaID"
+            Default: =ThisItem.'Idea ID'
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@'Idea Ratings'],DataSourceInfo.DisplayName,"IdeaID")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =false
+            Update: =Value(DataCardValue49.Text)
+            Visible: =false
+            Width: =642
+            X: =0
+            Y: =9
+            ZIndex: =13
+
+            DataCardKey49 As label:
+                AutoHeight: =true
+                Color: =RGBA(255, 255, 255, 1)
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =Parent.Width - 60
+                Wrap: =false
+                X: =30
+                Y: =10
+                ZIndex: =1
+
+            DataCardValue49 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Gallery5.Selected.ID
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                Format: =TextFormat.Number
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardKey49.Y + DataCardKey49.Height + 5
+                ZIndex: =2
+
+            ErrorMessage44 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue49.Y + DataCardValue49.Height
+                ZIndex: =3
+
+            StarVisible44 As label:
+                Align: =Align.Center
+                Height: =DataCardKey49.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey49.Y
+                ZIndex: =4
+
+    TextInput1_2 As text:
+        BorderStyle: =BorderStyle.None
+        BorderThickness: =0
+        Color: =RGBA(255, 255, 255, 1)
+        Default: =""
+        Fill: =RGBA(46, 46, 56, 1)
+        HintText: ="Search"
+        HoverColor: =RGBA(255, 255, 255, 1)
+        HoverFill: =RGBA(46, 46, 56, 1)
+        PressedColor: =RGBA(255, 255, 255, 1)
+        PressedFill: =RGBA(46, 46, 56, 1)
+        Width: =274
+        X: =If(!IsExpand, 421, 296)
+        Y: =57
+        ZIndex: =8
+
+    Label19 As label:
+        Color: =RGBA(255, 255, 255, 1)
+        Fill: =RGBA(46, 46, 56, 1)
+        Height: =718
+        Text: =""
+        Visible: =showAllRatings
+        Width: =726
+        X: =640
+        Y: =50
+        ZIndex: =9
+
+    Button3_11 As button:
+        BorderStyle: =BorderStyle.None
+        Color: =RGBA(255, 230, 0, 1)
+        DisabledColor: =RGBA(128, 128, 128, 1)
+        DisabledFill: =RGBA(76, 76, 86, 1)
+        DisplayMode: =Edit
+        Fill: =RGBA(56, 55, 53, 1)
+        FontWeight: =FontWeight.Normal
+        Height: =35
+        HoverFill: =RGBA(56, 55, 53, 1)
+        OnSelect: |-
+            =Patch('Idea Detail',Gallery5.Selected,
+            {Status:{Value:"Approved"}});
+        PressedColor: =
+        PressedFill: =RGBA(56, 55, 53, 1)
+        RadiusBottomLeft: =0
+        RadiusBottomRight: =0
+        RadiusTopLeft: =0
+        RadiusTopRight: =0
+        Size: =13
+        Text: ="Approve"
+        Width: =114
+        X: =871
+        Y: =602
+        ZIndex: =13
+
+    Button3_12 As button:
+        BorderStyle: =BorderStyle.None
+        Color: =RGBA(255, 230, 0, 1)
+        DisabledColor: =RGBA(128, 128, 128, 1)
+        DisabledFill: =RGBA(76, 76, 86, 1)
+        DisplayMode: =Edit
+        Fill: =RGBA(56, 55, 53, 1)
+        FontWeight: =FontWeight.Normal
+        Height: =35
+        HoverFill: =RGBA(56, 55, 53, 1)
+        OnSelect: |-
+            =Patch('Idea Detail',Gallery5.Selected,
+            {Status:{Value:"Rejected"}});
+        PressedColor: =
+        PressedFill: =RGBA(56, 55, 53, 1)
+        RadiusBottomLeft: =0
+        RadiusBottomRight: =0
+        RadiusTopLeft: =0
+        RadiusTopRight: =0
+        Size: =13
+        Text: ="Reject"
+        Width: =114
+        X: =746
+        Y: =602
+        ZIndex: =14
+
+    Group2 As group:
+        Height: =5
+        Width: =5
+        X: =80
+        Y: =80
+        ZIndex: =18
+
+        Gallery7_3 As gallery.galleryVertical:
+            Height: =708
+            Items: =coll_navigation
+            Layout: =Layout.Vertical
+            ShowScrollbar: =false
+            TemplateFill: =//If(ThisItem.IsSelected, RGBA(250, 230, 0, 1), RGBA(0,0,0,0))
+            TemplateSize: =40
+            Width: =169
+            Y: =60
+            ZIndex: =10
+
+            Rectangle1_9 As rectangle:
+                Fill: =RGBA(56, 56, 66, 1)
+                Height: =40
+                OnSelect: =ThisItem.visualTitle
+                Visible: =ThisItem.IsSelected
+                Width: =If(IsExpand, 70, 155)
+                ZIndex: =1
+
+            Label7_3 As label:
+                Color: =RGBA(255, 255, 255, 1)
+                HoverColor: =RGBA(250, 230, 0, 1)
+                OnSelect: =Navigate(ThisItem.screen)
+                PaddingLeft: =10
+                Size: =10
+                Text: =ThisItem.visualTitle
+                Visible: |-
+                    =If(ThisItem.access = "All" && !IsExpand, true,
+                    ThisItem.access = "Admin" && !IsExpand, IsAdminGlobal)
+                Width: =94
+                X: =59
+                ZIndex: =2
+
+            Rectangle1_6 As rectangle:
+                Fill: =If(ThisItem.visualTitle= _selectedIcon,RGBA(250, 230, 0, 1),RGBA(0, 0, 0, 0))
+                Height: =30
+                OnSelect: =ThisItem.visualTitle
+                Visible: |-
+                    =If(ThisItem.access = "All", true,
+                    ThisItem.access = "Admin", IsAdminGlobal)
+                Width: =5
+                Y: =5
+                ZIndex: =3
+
+            Icon3_3 As icon.Add:
+                Color: =If(ThisItem.visualTitle= _selectedIcon,RGBA(250, 230, 0, 1),RGBA(255, 255, 255, 1))
+                Height: =40
+                HoverColor: =RGBA(250, 230, 0, 1)
+                Icon: =ThisItem.icon
+                OnSelect: |-
+                    =Navigate(ThisItem.screen);Set(_selectedIcon, ThisItem.visualTitle);
+                    //If(ThisItem.myIdeas, UpdateContext({myIdeas: true}), UpdateContext({myIdeas: false}));
+                PaddingBottom: =8
+                PaddingRight: =95
+                PaddingTop: =8
+                Visible: |-
+                    =If(ThisItem.access = "All", true,
+                    ThisItem.access = "Admin", IsAdminGlobal)
+                Width: =137
+                X: =17
+                ZIndex: =4
+
+        iconHamburgerMenu_8 As icon.Hamburger:
+            BorderColor: =RGBA(101, 128, 187, 1)
+            BorderStyle: =BorderStyle.None
+            Color: =RGBA(255, 255, 255, 1)
+            DisabledFill: =iconHamburgerMenu_8.Fill
+            FocusedBorderColor: =iconHamburgerMenu_8.BorderColor
+            Height: =38
+            HoverBorderColor: =ColorFade(iconHamburgerMenu_8.BorderColor, 20%)
+            HoverColor: =RGBA(250, 230, 0, 1)
+            HoverFill: =iconHamburgerMenu_8.Fill
+            Icon: =Icon.Hamburger
+            OnSelect: =//Set(IsExpand, !IsExpand)
+            PaddingBottom: =8
+            PaddingTop: =8
+            PressedBorderColor: =ColorFade(iconHamburgerMenu_8.BorderColor, -20%)
+            PressedColor: =ColorFade(iconHamburgerMenu_8.Color, -20%)
+            PressedFill: =iconHamburgerMenu_8.Fill
+            TabIndex: =0
+            Visible: =false
+            Width: =28
+            X: =29
+            Y: =60
+            ZIndex: =11
+
+        Rectangle2_5 As rectangle:
+            BorderColor: =RGBA(101, 128, 187, 1)
+            DisabledFill: =Rectangle2_5.Fill
+            Fill: =RGBA(250, 230, 0, 1)
+            FocusedBorderColor: =Rectangle2_5.BorderColor
+            Height: =704
+            HoverFill: =Rectangle2_5.Fill
+            PressedFill: =Rectangle2_5.Fill
+            Width: =1
+            X: =If(IsExpand, 85, 185)
+            Y: =60
+            ZIndex: =12
+
+    Group8 As group:
+        Height: =5
+        Width: =5
+        X: =40
+        Y: =40
+        ZIndex: =25
+
+        Rectangle2 As rectangle:
+            Fill: =RGBA(46, 46, 56, 0.9)
+            Height: =640
+            Visible: =showRatings
+            Width: =936
+            X: =421
+            Y: =109
+            ZIndex: =15
+
+        "Gallery6 As gallery.'BrowseLayout_Vertical_OneTextVariant_ver4.0'":
+            Fill: =RGBA(46, 46, 56, 0.8)
+            Height: =551
+            Items: =Filter('Idea Ratings', 'Idea ID' = Gallery5.Selected.ID)
+            Layout: =Layout.Vertical
+            ShowScrollbar: =false
+            TemplatePadding: =0
+            TemplateSize: =50
+            Visible: =showRatings
+            Width: =936
+            X: =421
+            Y: =191
+            ZIndex: =16
+
+            Title4 As label:
+                Color: =RGBA(255, 255, 255, 1)
+                FontWeight: =FontWeight.Normal
+                Height: =34
+                OnSelect: =Select(Parent)
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =10
+                Text: =ThisItem.'Created By'.DisplayName
+                VerticalAlign: =VerticalAlign.Top
+                Width: =151
+                X: =19
+                Y: =11
+                ZIndex: =1
+
+            Separator2 As rectangle:
+                Fill: =RGBA(230, 230, 230, 1)
+                Height: =1
+                OnSelect: =Select(Parent)
+                Width: =Parent.TemplateWidth
+                Y: =Parent.TemplateHeight - 1
+                ZIndex: =3
+
+            Title4_1 As label:
+                Color: =RGBA(255, 255, 255, 1)
+                Height: =23
+                OnSelect: =Select(Parent)
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =10
+                Text: =ThisItem.'Code Quality'
+                VerticalAlign: =VerticalAlign.Top
+                Width: =11
+                X: =187
+                Y: =12
+                ZIndex: =4
+
+            Title4_2 As label:
+                Color: =RGBA(255, 255, 255, 1)
+                Height: =36
+                OnSelect: =Select(Parent)
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =10
+                Text: =ThisItem.'Timeline Delivery'
+                VerticalAlign: =VerticalAlign.Top
+                Width: =8
+                X: =259
+                Y: =12
+                ZIndex: =5
+
+            Title4_3 As label:
+                Color: =RGBA(255, 255, 255, 1)
+                FontWeight: =FontWeight.Bold
+                Height: =36
+                OnSelect: =Select(Parent)
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =10
+                Text: =ThisItem.'Purpose Achieved'
+                VerticalAlign: =VerticalAlign.Top
+                Width: =13
+                X: =345
+                Y: =12
+                ZIndex: =6
+
+            Title4_4 As label:
+                Color: =RGBA(255, 255, 255, 1)
+                Height: =23
+                OnSelect: =Select(Parent)
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =10
+                Text: =ThisItem.'Documentation Quality'
+                VerticalAlign: =VerticalAlign.Top
+                Width: =21
+                X: =436
+                Y: =12
+                ZIndex: =7
+
+            Title4_5 As label:
+                Color: =RGBA(255, 255, 255, 1)
+                Height: =23
+                OnSelect: =Select(Parent)
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =10
+                Text: =ThisItem.'User Experience'
+                VerticalAlign: =VerticalAlign.Top
+                Width: =26
+                X: =565
+                Y: =12
+                ZIndex: =8
+
+            Title4_6 As label:
+                Color: =RGBA(255, 255, 255, 1)
+                Height: =36
+                OnSelect: =Select(Parent)
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =10
+                Text: =ThisItem.Comments
+                VerticalAlign: =VerticalAlign.Top
+                Width: =259
+                X: =677
+                Y: =9
+                ZIndex: =9
+
+        Icon12 As icon.Cancel:
+            Color: =RGBA(255, 255, 255, 1)
+            Height: =22
+            Icon: =Icon.Cancel
+            OnSelect: |-
+                =UpdateContext({showRatings:false})
+            Visible: =showRatings
+            Width: =25
+            X: =1330
+            Y: =113
+            ZIndex: =17
+
+        Title4_7 As label:
+            Color: =RGBA(255, 255, 255, 1)
+            Height: =23
+            OnSelect: =
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =10
+            Text: ="Name"
+            VerticalAlign: =VerticalAlign.Top
+            Visible: =showRatings
+            Width: =132
+            X: =442
+            Y: =156
+            ZIndex: =18
+
+        Label13 As label:
+            Color: =RGBA(255, 255, 255, 1)
+            FontWeight: =FontWeight.Semibold
+            Height: =37
+            PaddingRight: =2
+            PaddingTop: =2
+            Size: =10
+            Text: ="Code Quality"
+            Visible: =showRatings
+            Width: =81
+            X: =597
+            Y: =154
+            ZIndex: =19
+
+        Label13_1 As label:
+            Color: =RGBA(255, 255, 255, 1)
+            FontWeight: =FontWeight.Semibold
+            Height: =39
+            PaddingRight: =2
+            PaddingTop: =2
+            Size: =10
+            Text: ="Documentation Quality"
+            Visible: =showRatings
+            Width: =120
+            X: =844
+            Y: =152
+            ZIndex: =20
+
+        Label13_2 As label:
+            Color: =RGBA(255, 255, 255, 1)
+            FontWeight: =FontWeight.Semibold
+            Height: =34
+            PaddingRight: =2
+            PaddingTop: =2
+            Size: =10
+            Text: ="Timeline Delivery"
+            Visible: =showRatings
+            Width: =101
+            X: =666
+            Y: =157
+            ZIndex: =21
+
+        Label13_3 As label:
+            Color: =RGBA(255, 255, 255, 1)
+            FontWeight: =FontWeight.Semibold
+            Height: =37
+            PaddingRight: =2
+            PaddingTop: =2
+            Size: =10
+            Text: ="Purpose Achieved"
+            Visible: =showRatings
+            Width: =112
+            X: =753
+            Y: =154
+            ZIndex: =22
+
+        Label13_4 As label:
+            Color: =RGBA(255, 255, 255, 1)
+            FontWeight: =FontWeight.Semibold
+            Height: =38
+            PaddingRight: =2
+            PaddingTop: =2
+            Size: =10
+            Text: ="User Experience"
+            Visible: =showRatings
+            Width: =89
+            X: =975
+            Y: =153
+            ZIndex: =23
+
+        Label13_5 As label:
+            Color: =RGBA(255, 255, 255, 1)
+            FontWeight: =FontWeight.Semibold
+            Height: =23
+            PaddingRight: =2
+            PaddingTop: =2
+            Size: =10
+            Text: ="Comment"
+            Visible: =showRatings
+            Width: =111
+            X: =1090
+            Y: =152
+            ZIndex: =24
+

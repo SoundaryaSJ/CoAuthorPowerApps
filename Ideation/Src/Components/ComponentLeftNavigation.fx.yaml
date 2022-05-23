@@ -1,0 +1,10 @@
+ComponentLeftNavigation As CanvasComponent:
+    DataSource: |-
+        =Table({SampleStringField: "SampleText", SampleNumberField: 10, SampleBooleanField: true})
+    Fill: =RGBA(0, 0, 0, 0)
+    Height: =App.Height
+    Width: =80
+    X: =0
+    Y: =0
+    ZIndex: =1
+

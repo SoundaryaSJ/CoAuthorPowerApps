@@ -1,0 +1,128 @@
+Screen1 As screen:
+
+    Gallery3 As gallery.galleryVertical:
+        BorderThickness: =1
+        Height: =700
+        Items: ='Idea Detail'
+        Layout: =Layout.Vertical
+        TemplateSize: =163
+        X: =40
+        Y: =40
+        ZIndex: =1
+
+        Label8 As label:
+            Height: =49
+            OnSelect: =Select(Parent)
+            Text: =ThisItem.Title
+            Width: =630
+            ZIndex: =1
+
+        Rating5 As rating:
+            Default: =ThisItem.'User ratings'
+            DisabledFill: =Self.Fill
+            DisplayMode: =DisplayMode.Edit
+            FocusedBorderColor: =Self.BorderColor
+            Height: =40
+            HoverFill: =Self.Fill
+            Max: =5
+            OnSelect: =Select(Parent)
+            PressedFill: =Self.Fill
+            Width: =200
+            X: =394
+            Y: =9
+            ZIndex: =2
+
+        Label9 As label:
+            OnSelect: =Select(Parent)
+            Text: |-
+                ="Rated By: "&CountRows(ThisItem.'Rated By')
+            Width: =157
+            X: =258
+            Y: =26
+            ZIndex: =3
+
+        Button2 As button:
+            OnSelect: |
+                =ClearCollect(ratedByCol, ThisItem.'Rated By');
+                ClearCollect(colUserRating, ThisItem.'User ratings');
+                
+                Patch(
+                        ratedByCol,
+                        Defaults(ratedByCol),
+                        {
+                            Claims: "i:0#.f|membership|" & Lower(User().Email),
+                            Department: "",
+                            DisplayName: User().FullName,
+                            Email: User().Email,
+                            JobTitle: "",
+                            Picture: ""
+                        }
+                    );
+                
+                Patch('Idea Detail',
+                        ThisItem,
+                        {
+                            'Rated By': ratedByCol,
+                            'User ratings':Concatenate(ThisItem.'User ratings'&","&Rating3.Value)
+                        }
+                )
+            Text: ="Button"
+            Width: =82
+            X: =453
+            Y: =66
+            ZIndex: =4
+
+        Label10 As label:
+            OnSelect: =Select(Parent)
+            Text: =ThisItem.'User ratings'
+            Width: =65
+            X: =18
+            Y: =66
+            ZIndex: =5
+
+        Rating6 As rating:
+            Default: =ThisItem.'User ratings'
+            DisabledFill: =Self.Fill
+            DisplayMode: =DisplayMode.Edit
+            FocusedBorderColor: =Self.BorderColor
+            Height: =40
+            HoverFill: =Self.Fill
+            Max: =5
+            OnChange: |
+                =ClearCollect(ratedByCol, ThisItem.'Rated By');
+                ClearCollect(colUserRating, ThisItem.'User ratings');
+                
+                Patch(
+                        ratedByCol,
+                        Defaults(ratedByCol),
+                        {
+                            Claims: "i:0#.f|membership|" & Lower(User().Email),
+                            Department: "",
+                            DisplayName: User().FullName,
+                            Email: User().Email,
+                            JobTitle: "",
+                            Picture: ""
+                        }
+                    );
+                
+                Patch('Idea Detail',
+                        ThisItem,
+                        {
+                            'Rated By': ratedByCol,
+                            'User ratings':Concatenate(ThisItem.'User ratings'&","&Rating6.Value)
+                        }
+                )
+            OnSelect: =Select(Parent)
+            PressedFill: =Self.Fill
+            Width: =200
+            X: =215
+            Y: =106
+            ZIndex: =6
+
+    Icon7 As icon.Cancel:
+        Icon: =Icon.Cancel
+        OnSelect: =Back()
+        X: =870
+        Y: =40
+        ZIndex: =2
+
